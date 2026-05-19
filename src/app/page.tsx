@@ -188,9 +188,9 @@ export default function Home() {
     const deck = buildDeck();
     const nextPlayers: Player[] = [
       { id: 0, name: "Player 1", isHuman: true, place: placePool[0], hand: [], civ: {} },
-      { id: 1, name: "CPU 1", isHuman: false, place: placePool[1], hand: [], civ: {} },
-      { id: 2, name: "CPU 2", isHuman: false, place: placePool[2], hand: [], civ: {} },
-      { id: 3, name: "CPU 3", isHuman: false, place: placePool[3], hand: [], civ: {} },
+      { id: 1, name: "Player 2", isHuman: false, place: placePool[1], hand: [], civ: {} },
+      { id: 2, name: "Player 3", isHuman: false, place: placePool[2], hand: [], civ: {} },
+      { id: 3, name: "Player 4", isHuman: false, place: placePool[3], hand: [], civ: {} },
     ];
 
     for (let r = 0; r < 5; r += 1) {
@@ -413,9 +413,9 @@ export default function Home() {
   }, [started, winner, active, turn, players, drawPile, discardPile, drawFromPiles, advanceTurn, launchWinDrops]);
 
   const rules = useMemo(() => [
-    "You vs 3 CPU players.",
+    "You vs 3 players.",
     "You can only see your own cards.",
-    "Each CPU auto-plays in order.",
+    "Each Player auto-plays in order.",
     "Win by completing: Lugar + Lokasyon + Rehiyon + Paggalaw + Interaksyon.",
   ], []);
 
@@ -504,7 +504,7 @@ export default function Home() {
                   </div>
                   {!p.isHuman ? (
                     <div className="mt-3">
-                      <p className="text-xs italic text-slate-600">CPU hand hidden</p>
+                      <p className="text-xs italic text-slate-600">Player hand hidden</p>
                       <div className="relative mt-2 h-24 w-full overflow-visible">
                         {Array.from({ length: Math.min(p.hand.length, 7) }).map((_, i) => {
                           const centered = i - Math.floor(Math.min(p.hand.length, 7) / 2);
@@ -553,9 +553,9 @@ export default function Home() {
                     {phase === "action" ? (
                       <>
                         <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
-                        <button type="button" onClick={humanTrade} className="rounded-full bg-[#6e4a2f] px-4 py-2 text-sm font-bold text-white">Trade with CPU {selectedTarget}</button>
+                        <button type="button" onClick={humanTrade} className="rounded-full bg-[#6e4a2f] px-4 py-2 text-sm font-bold text-white">Trade with Player {selectedTarget}</button>
                         <select className="rounded-lg border border-[#8e6b48] bg-[#f7f0e4] px-2 py-2 text-sm" value={selectedTarget} onChange={(e) => setSelectedTarget(Number(e.target.value))}>
-                          <option value={1}>CPU 1</option><option value={2}>CPU 2</option><option value={3}>CPU 3</option>
+                          <option value={1}>Player 1</option><option value={2}>Player 2</option><option value={3}>Player 3</option>
                         </select>
                         <button type="button" onClick={humanDisaster} className="rounded-full bg-[#8a4b2f] px-4 py-2 text-sm font-bold text-white">Disaster Attack</button>
                       </>
