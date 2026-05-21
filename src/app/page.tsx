@@ -147,6 +147,7 @@ export default function Home() {
   const [selectedTarget, setSelectedTarget] = useState(1);
   const [winner, setWinner] = useState<number | null>(null);
   const [started, setStarted] = useState(false);
+  const [showMobileHand, setShowMobileHand] = useState(false);
   const [winDrops, setWinDrops] = useState<Array<{ id: number; left: number; color: string; delay: number; duration: number }>>([]);
 
   const active = players[turn];
@@ -187,7 +188,7 @@ export default function Home() {
     const placePool = shuffle(PLACES).slice(0, 4);
     const deck = buildDeck();
     const nextPlayers: Player[] = [
-      { id: 0, name: "Player 1", isHuman: true, place: placePool[0], hand: [], civ: {} },
+      { id: 0, name: "You", isHuman: true, place: placePool[0], hand: [], civ: {} },
       { id: 1, name: "Player 2", isHuman: false, place: placePool[1], hand: [], civ: {} },
       { id: 2, name: "Player 3", isHuman: false, place: placePool[2], hand: [], civ: {} },
       { id: 3, name: "Player 4", isHuman: false, place: placePool[3], hand: [], civ: {} },
@@ -420,8 +421,9 @@ export default function Home() {
   ], []);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_15%_0%,#4f79a7_0%,#254c72_45%,#1b3550_100%)] p-5 text-[#102031] md:p-8">
-      <div className="mx-auto max-w-6xl rounded-3xl border border-[#9c784f] bg-[#efe4d2] p-5 shadow-2xl md:p-7">
+    <main className="relative min-h-screen overflow-hidden bg-[url('/images/bg.png')] bg-cover bg-center bg-no-repeat p-3 text-[#102031] md:p-8">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(29,18,8,0.18)_0%,rgba(29,18,8,0.26)_100%)]" />
+      <div className="mx-auto max-w-6xl rounded-3xl border border-[#b58f60] bg-[#efe4d2]/92 p-5 shadow-2xl backdrop-blur-[1px] md:p-7">
         <h1 className="text-3xl font-black tracking-tight">GEO-DECK Solo Mode</h1>
         <p className="mt-2 text-sm">1 player + 3 computer players (hidden CPU cards).</p>
 
@@ -438,11 +440,17 @@ export default function Home() {
 
             <p className="mt-4 rounded-xl bg-[#e2c8a6] px-4 py-3 text-sm font-semibold text-[#5d3417]">{message}</p>
 
-            <section className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(330px,1fr)]">
-              <section className="relative rounded-[3rem] border-[10px] border-[#8b4e2a] bg-[linear-gradient(145deg,#b66a37_0%,#8c4d27_45%,#6f3b1f_100%)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.45)] md:h-[920px] md:p-5">
-              <div className="absolute inset-[18px] rounded-[2.3rem] bg-[radial-gradient(circle_at_50%_45%,#5ad0ff_0%,#1d7bb2_38%,#155f8f_65%,#114f79_100%)] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.2),inset_0_0_40px_rgba(0,0,0,0.35)]" />
-              <div className="pointer-events-none absolute inset-[54px] rounded-[999px] border border-[#0f4467]/45" />
-              <div className="pointer-events-none absolute inset-x-[23%] top-[22%] h-[56%] rounded-[999px] border border-[#0f4467]/35" />
+            <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.9fr)_minmax(320px,1fr)]">
+              <section className="overflow-visible pb-3">
+              <div className="relative mx-auto w-full max-w-[1020px] px-2 pb-4 pt-4 md:px-[170px] md:pb-[210px] md:pt-[210px] 2xl:px-[190px]">
+              <div className="relative mx-auto aspect-[16/9] w-full max-w-[820px] rounded-[3rem] border-[10px] border-[#8b4e2a] bg-[radial-gradient(circle_at_12%_12%,#87c8e8_0%,#3d80b2_24%,#244a70_50%,#152840_100%)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.45)] md:p-5">
+              <div className="absolute inset-[18px] rounded-[2.3rem] bg-[radial-gradient(circle_at_50%_45%,#0d8946_0%,#066735_45%,#04592e_70%,#034b27_100%)] shadow-[inset_0_0_0_2px_rgba(255,255,255,0.16),inset_0_0_45px_rgba(0,0,0,0.35)]" />
+              <div className="pointer-events-none absolute inset-[54px] rounded-[999px] border border-[#013f20]/60" />
+              <div className="pointer-events-none absolute inset-x-[23%] top-[22%] h-[56%] rounded-[999px] border border-[#013f20]/50" />
+              <div className="pointer-events-none absolute left-[16%] top-[19%] text-3xl opacity-90">🌍</div>
+              <div className="pointer-events-none absolute right-[19%] top-[20%] text-3xl opacity-90">🧭</div>
+              <div className="pointer-events-none absolute bottom-[18%] left-[16%] text-3xl opacity-90">🗺️</div>
+              <div className="pointer-events-none absolute bottom-[17%] right-[17%] text-3xl opacity-90">📍</div>
               {winDrops.map((drop) => (
                 <span
                   key={drop.id}
@@ -481,14 +489,14 @@ export default function Home() {
               {players.map((p, idx) => (
                 <div
                   key={p.id}
-                  className={`relative z-10 rounded-2xl border p-4 shadow-xl ${idx === turn ? "border-[#2f6fa7] bg-[#e7f2fe]" : "border-[#ba9b76] bg-[#f7f0e4]"} md:absolute ${
+                  className={`relative z-20 rounded-2xl border p-4 shadow-xl ${idx === turn ? "border-[#2f6fa7] bg-[#e7f2fe]" : "border-[#ba9b76] bg-[#f7f0e4]"} md:absolute ${
                     idx === 0
-                      ? "md:bottom-3 md:left-1/2 md:w-[40%] md:-translate-x-1/2"
+                      ? "md:bottom-0 md:left-1/2 md:w-[30%] md:min-w-[210px] md:-translate-x-1/2 md:translate-y-[calc(100%+22px)]"
                       : idx === 1
-                        ? "md:right-3 md:top-1/2 md:w-[30%] md:-translate-y-1/2"
+                        ? "md:right-0 md:top-1/2 md:w-[24%] md:min-w-[190px] md:-translate-y-1/2 md:translate-x-[calc(100%+22px)]"
                         : idx === 2
-                          ? "md:left-1/2 md:top-3 md:w-[40%] md:-translate-x-1/2"
-                          : "md:left-3 md:top-1/2 md:w-[30%] md:-translate-y-1/2"
+                          ? "md:top-0 md:left-1/2 md:w-[30%] md:min-w-[210px] md:-translate-x-1/2 md:-translate-y-[calc(100%+22px)]"
+                          : "md:left-0 md:top-1/2 md:w-[24%] md:min-w-[190px] md:-translate-y-1/2 md:-translate-x-[calc(100%+22px)]"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -502,28 +510,32 @@ export default function Home() {
                     <div className="rounded-lg bg-[#dfccb2] p-2">Paggalaw: {p.civ.paggalaw?.title ?? "-"}</div>
                     <div className="rounded-lg bg-[#dfccb2] p-2">Interaksyon: {p.civ.interaksyon?.title ?? "-"}</div>
                   </div>
-                  {!p.isHuman ? (
-                    <div className="mt-3">
-                      <p className="text-xs italic text-slate-600">Player hand hidden</p>
-                      <div className="relative mt-2 h-24 w-full overflow-visible">
-                        {Array.from({ length: Math.min(p.hand.length, 7) }).map((_, i) => {
-                          const centered = i - Math.floor(Math.min(p.hand.length, 7) / 2);
-                          return (
-                            <div
-                              key={`${p.id}-back-${i}`}
-                              style={cardBackStyle(centered)}
-                              className="absolute left-[44%] top-1 h-20 w-14 -translate-x-1/2 rounded-lg border-2 border-white bg-[repeating-linear-gradient(135deg,#2f5d8a_0_6px,#3f74a8_6px_12px)] shadow-md"
-                            />
-                          );
-                        })}
-                      </div>
+                  <div className="mt-3">
+                    <p className="text-xs italic text-slate-600">{p.isHuman ? "Your hand on table" : "Player hand hidden"}</p>
+                    <div className="relative mt-2 h-24 w-full overflow-visible">
+                      {Array.from({ length: Math.min(p.hand.length, 7) }).map((_, i) => {
+                        const centered = i - Math.floor(Math.min(p.hand.length, 7) / 2);
+                        return (
+                          <div
+                            key={`${p.id}-back-${i}`}
+                            style={cardBackStyle(centered)}
+                            className="absolute left-[44%] top-1 h-20 w-14 -translate-x-1/2 rounded-xl border-2 border-white bg-[radial-gradient(circle_at_30%_22%,#ffffff_0%,#f5f5f5_22%,transparent_23%),linear-gradient(135deg,#f94144_0%,#f3722c_24%,#f9c74f_48%,#43aa8b_72%,#577590_100%)] shadow-lg"
+                          >
+                            <div className="mx-auto mt-5 h-9 w-9 rounded-full border-2 border-white/95 bg-[#1f2a44]/75 text-center text-[10px] font-black leading-9 text-white">
+                              UNO
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
-                  ) : null}
+                  </div>
                 </div>
               ))}
+              </div>
+              </div>
               </section>
 
-              <aside className="rounded-2xl border border-[#ba9b76] bg-[#f7f0e4] p-4 shadow-xl">
+              <aside className="hidden rounded-2xl border border-[#ba9b76] bg-[#f7f0e4] p-4 shadow-xl xl:block">
                 <h3 className="text-lg font-bold">Your Card Choices</h3>
                 <p className="mt-1 text-xs text-[#5f4c36]">Select a card on the right panel, then use action buttons below.</p>
                 <div className="mt-3 max-h-[620px] space-y-2 overflow-y-auto pr-1">
@@ -571,6 +583,67 @@ export default function Home() {
               </aside>
             </section>
 
+            <button
+              type="button"
+              onClick={() => setShowMobileHand(true)}
+              className="fixed bottom-4 right-4 z-40 rounded-full bg-[#1f5f3a] px-5 py-3 text-sm font-bold text-white shadow-xl lg:hidden"
+            >
+              Open Cards
+            </button>
+
+            {showMobileHand ? (
+              <div className="fixed inset-0 z-[80] bg-black/55 p-3 lg:hidden">
+                <section className="mx-auto flex h-full w-full max-w-xl flex-col rounded-3xl border border-[#ba9b76] bg-[#f7f0e4] p-4 shadow-2xl">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold">Your Cards</h3>
+                    <button type="button" onClick={() => setShowMobileHand(false)} className="rounded-full bg-[#6e4a2f] px-3 py-1 text-xs font-bold text-white">Close</button>
+                  </div>
+                  <p className="mt-1 text-xs text-[#5f4c36]">Mobile mode: cards are shown in this modal for easier play.</p>
+                  <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1">
+                    {players[0]?.hand.map((card, idx) => (
+                      <button
+                        key={`${card.id}-${idx}`}
+                        type="button"
+                        onClick={() => setSelectedHandIndex(idx)}
+                        className={`w-full rounded-xl border-2 bg-gradient-to-b p-3 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-extrabold uppercase tracking-wide">{typeLabel(card.type)}</p>
+                          <span className="text-[10px] font-bold opacity-90">Card {idx + 1}</span>
+                        </div>
+                        <p className="mt-1 text-base font-black leading-tight">{card.title}</p>
+                        <p className="mt-1 text-xs leading-snug opacity-90">{card.text}</p>
+                      </button>
+                    ))}
+                    {players[0]?.hand.length === 0 ? (
+                      <p className="rounded-lg border border-dashed border-[#8e6b48] bg-[#efe1cd] p-3 text-xs text-[#5f4c36]">No cards in hand.</p>
+                    ) : null}
+                  </div>
+                  {winner == null && isHumanTurn ? (
+                    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] pt-4">
+                      {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw 2</button> : null}
+                      {phase === "action" ? (
+                        <>
+                          <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
+                          <button type="button" onClick={humanTrade} className="rounded-full bg-[#6e4a2f] px-4 py-2 text-sm font-bold text-white">Trade with Player {selectedTarget}</button>
+                          <select className="rounded-lg border border-[#8e6b48] bg-[#f7f0e4] px-2 py-2 text-sm" value={selectedTarget} onChange={(e) => setSelectedTarget(Number(e.target.value))}>
+                            <option value={1}>Player 1</option><option value={2}>Player 2</option><option value={3}>Player 3</option>
+                          </select>
+                          <button type="button" onClick={humanDisaster} className="rounded-full bg-[#8a4b2f] px-4 py-2 text-sm font-bold text-white">Disaster Attack</button>
+                        </>
+                      ) : null}
+                      {phase === "discard" ? (
+                        <>
+                          <button type="button" onClick={humanDiscard} className="rounded-full bg-[#8a5a2f] px-4 py-2 text-sm font-bold text-white">Discard Selected</button>
+                          <button type="button" onClick={endHumanTurn} className="rounded-full bg-[#2b567f] px-4 py-2 text-sm font-bold text-white">End Turn</button>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </section>
+              </div>
+            ) : null}
+
             {winner != null ? (
               <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/45 p-4">
                 <section className="w-full max-w-md rounded-3xl border-2 border-[#d9b68b] bg-[#f7e8d4] p-7 text-center shadow-2xl">
@@ -588,6 +661,12 @@ export default function Home() {
         </section>
       </div>
       <style jsx global>{`
+        @media (max-width: 1023px) and (orientation: portrait) {
+          html, body {
+            min-height: 100%;
+          }
+        }
+
         @keyframes geoDrop {
           0% { transform: translateY(-12px) rotate(0deg); opacity: 0; }
           10% { opacity: 1; }
