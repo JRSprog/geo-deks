@@ -583,29 +583,40 @@ export default function Home() {
               </aside>
             </section>
 
-            <button
-              type="button"
-              onClick={() => setShowMobileHand(true)}
-              className="fixed bottom-4 right-4 z-40 rounded-full bg-[#1f5f3a] px-5 py-3 text-sm font-bold text-white shadow-xl lg:hidden"
-            >
-              Open Cards
-            </button>
+            <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 lg:hidden">
+              {winner == null && isHumanTurn && phase === "draw" ? (
+                <button
+                  type="button"
+                  onClick={humanDraw}
+                  className="rounded-full bg-[#2f5d8a] px-5 py-3 text-sm font-bold text-white shadow-xl"
+                >
+                  Draw 2
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setShowMobileHand(true)}
+                className="rounded-full bg-[#1f5f3a] px-5 py-3 text-sm font-bold text-white shadow-xl"
+              >
+                Open Cards
+              </button>
+            </div>
 
             {showMobileHand ? (
               <div className="fixed inset-0 z-[80] bg-black/55 p-3 lg:hidden">
-                <section className="mx-auto flex h-full w-full max-w-xl flex-col rounded-3xl border border-[#ba9b76] bg-[#f7f0e4] p-4 shadow-2xl">
-                  <div className="flex items-center justify-between">
+                <section className="mx-auto flex h-full w-full max-w-xl flex-col overflow-hidden rounded-3xl border border-[#ba9b76] bg-[#f7f0e4] shadow-2xl">
+                  <div className="flex items-center justify-between border-b border-[#d7c2a3] px-4 py-3">
                     <h3 className="text-lg font-bold">Your Cards</h3>
                     <button type="button" onClick={() => setShowMobileHand(false)} className="rounded-full bg-[#6e4a2f] px-3 py-1 text-xs font-bold text-white">Close</button>
                   </div>
-                  <p className="mt-1 text-xs text-[#5f4c36]">Mobile mode: cards are shown in this modal for easier play.</p>
-                  <div className="mt-3 flex-1 space-y-2 overflow-y-auto pr-1">
+                  <p className="px-4 pt-2 text-xs text-[#5f4c36]">Mobile mode: cards are shown in this modal for easier play.</p>
+                  <div className="mt-2 grid flex-1 grid-cols-1 gap-2 overflow-y-auto px-4 pb-3 pr-4 min-[420px]:grid-cols-2">
                     {players[0]?.hand.map((card, idx) => (
                       <button
                         key={`${card.id}-${idx}`}
                         type="button"
                         onClick={() => setSelectedHandIndex(idx)}
-                        className={`w-full rounded-xl border-2 bg-gradient-to-b p-3 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
+                        className={`h-fit w-full rounded-xl border-2 bg-gradient-to-b p-3 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
                       >
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-extrabold uppercase tracking-wide">{typeLabel(card.type)}</p>
@@ -616,11 +627,11 @@ export default function Home() {
                       </button>
                     ))}
                     {players[0]?.hand.length === 0 ? (
-                      <p className="rounded-lg border border-dashed border-[#8e6b48] bg-[#efe1cd] p-3 text-xs text-[#5f4c36]">No cards in hand.</p>
+                      <p className="col-span-full rounded-lg border border-dashed border-[#8e6b48] bg-[#efe1cd] p-3 text-xs text-[#5f4c36]">No cards in hand.</p>
                     ) : null}
                   </div>
                   {winner == null && isHumanTurn ? (
-                    <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] pt-4">
+                    <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] bg-[#f7f0e4] px-4 py-3">
                       {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw 2</button> : null}
                       {phase === "action" ? (
                         <>
