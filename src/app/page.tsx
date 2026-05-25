@@ -181,6 +181,9 @@ export default function Home() {
     setActionsLeft(2);
     setSelectedHandIndex(null);
     setSelectedTarget(nt === 0 ? 1 : 0);
+    if (!nextPlayers[nt]?.isHuman) {
+      setShowMobileHand(false);
+    }
     setMessage(`${nextPlayers[nt].name} turn: Draw phase.`);
   }, [turn]);
 
@@ -211,7 +214,7 @@ export default function Home() {
     setSelectedTarget(1);
     setWinner(null);
     setWinDrops([]);
-    setMessage("Your turn: Draw 2 cards.");
+    setMessage("Your turn: Draw a card.");
     setStarted(true);
   };
 
@@ -240,7 +243,7 @@ export default function Home() {
 
   const humanDraw = () => {
     if (!active || !isHumanTurn || phase !== "draw" || winner != null) return;
-    const result = drawFromPiles(drawPile, discardPile, 2);
+    const result = drawFromPiles(drawPile, discardPile, 1);
     const nextPlayers = [...players];
     nextPlayers[humanIndex] = { ...active, hand: [...active.hand, ...result.drawn] };
     setPlayers(nextPlayers);
@@ -421,8 +424,24 @@ export default function Home() {
   ], []);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[url('/images/bg.png')] bg-cover bg-center bg-no-repeat p-3 text-[#102031] md:p-8">
+    <main className="relative min-h-screen overflow-x-hidden bg-[url('/images/bg.png')] bg-cover bg-center bg-no-repeat p-3 pb-28 text-[#102031] md:p-8">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(29,18,8,0.18)_0%,rgba(29,18,8,0.26)_100%)]" />
+            {winner == null && isHumanTurn ? (
+              <div className="fixed inset-x-0 bottom-0 z-[70] lg:hidden">
+                <div className="mx-auto max-w-6xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                  <div className="flex items-center justify-center gap-2 rounded-2xl border border-[#b58f60] bg-[#efe4d2]/95 p-3 shadow-2xl backdrop-blur-sm">
+                    <button
+                      type="button"
+                      onClick={() => setShowMobileHand(true)}
+                      className="rounded-full bg-[#1f5f3a] px-4 py-2 text-sm font-bold text-white shadow-xl"
+                    >
+                Open Cards
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="mx-auto max-w-6xl rounded-3xl border border-[#b58f60] bg-[#efe4d2]/92 p-5 shadow-2xl backdrop-blur-[1px] md:p-7">
         <h1 className="text-3xl font-black tracking-tight">GEO-DECK Solo Mode</h1>
         <p className="mt-2 text-sm">1 player + 3 computer players (hidden CPU cards).</p>
@@ -431,14 +450,26 @@ export default function Home() {
 
         {started && active ? (
           <>
-            <section className="mt-5 grid gap-3 md:grid-cols-4">
+            <section className="mt-5 hidden gap-3 md:grid md:grid-cols-4">
               <div className="rounded-xl bg-[#2b567f] px-4 py-3 text-sm font-bold text-white">Turn: {active.name}</div>
               <div className="rounded-xl bg-[#2b567f] px-4 py-3 text-sm font-bold text-white">Phase: {phase.toUpperCase()}</div>
               <div className="rounded-xl bg-[#2b567f] px-4 py-3 text-sm font-bold text-white">Actions: {phase === "action" && isHumanTurn ? actionsLeft : "-"}</div>
               <div className="rounded-xl bg-[#2b567f] px-4 py-3 text-sm font-bold text-white">Draw/Discard: {drawPile.length}/{discardPile.length}</div>
             </section>
 
-            <p className="mt-4 rounded-xl bg-[#e2c8a6] px-4 py-3 text-sm font-semibold text-[#5d3417]">{message}</p>
+            <p className="mt-4 hidden rounded-xl bg-[#e2c8a6] px-4 py-3 text-sm font-semibold text-[#5d3417] md:block">{message}</p>
+
+            <div className="sticky top-2 z-40 mt-5 lg:hidden">
+              <div className="rounded-2xl border border-[#b58f60] bg-[#efe4d2]/95 p-3 shadow-xl backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-2 text-xs font-bold text-white">
+                  <div className="rounded-xl bg-[#2b567f] px-3 py-2">Turn: {active.name}</div>
+                  <div className="rounded-xl bg-[#2b567f] px-3 py-2">Phase: {phase.toUpperCase()}</div>
+                  <div className="rounded-xl bg-[#2b567f] px-3 py-2">Actions: {phase === "action" && isHumanTurn ? actionsLeft : "-"}</div>
+                  <div className="rounded-xl bg-[#2b567f] px-3 py-2">Draw/Discard: {drawPile.length}/{discardPile.length}</div>
+                </div>
+                <p className="mt-2 rounded-xl bg-[#e2c8a6] px-3 py-2 text-sm font-semibold text-[#5d3417]">{message}</p>
+              </div>
+            </div>
 
             <section className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.9fr)_minmax(320px,1fr)]">
               <section className="overflow-visible pb-3">
@@ -561,7 +592,7 @@ export default function Home() {
 
                 {winner == null && isHumanTurn ? (
                   <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] pt-4">
-                    {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw 2</button> : null}
+                    {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw card</button> : null}
                     {phase === "action" ? (
                       <>
                         <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
@@ -583,47 +614,28 @@ export default function Home() {
               </aside>
             </section>
 
-            <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 lg:hidden">
-              {winner == null && isHumanTurn && phase === "draw" ? (
-                <button
-                  type="button"
-                  onClick={humanDraw}
-                  className="rounded-full bg-[#2f5d8a] px-5 py-3 text-sm font-bold text-white shadow-xl"
-                >
-                  Draw 2
-                </button>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => setShowMobileHand(true)}
-                className="rounded-full bg-[#1f5f3a] px-5 py-3 text-sm font-bold text-white shadow-xl"
-              >
-                Open Cards
-              </button>
-            </div>
-
             {showMobileHand ? (
               <div className="fixed inset-0 z-[80] bg-black/55 p-3 lg:hidden">
-                <section className="mx-auto flex h-full w-full max-w-xl flex-col overflow-hidden rounded-3xl border border-[#ba9b76] bg-[#f7f0e4] shadow-2xl">
+                <section className="mx-auto flex h-[calc(100dvh-1.5rem)] w-full max-w-xl flex-col overflow-hidden rounded-3xl border border-[#ba9b76] bg-[#f7f0e4] shadow-2xl">
                   <div className="flex items-center justify-between border-b border-[#d7c2a3] px-4 py-3">
                     <h3 className="text-lg font-bold">Your Cards</h3>
                     <button type="button" onClick={() => setShowMobileHand(false)} className="rounded-full bg-[#6e4a2f] px-3 py-1 text-xs font-bold text-white">Close</button>
                   </div>
                   <p className="px-4 pt-2 text-xs text-[#5f4c36]">Mobile mode: cards are shown in this modal for easier play.</p>
-                  <div className="mt-2 grid flex-1 grid-cols-1 gap-2 overflow-y-auto px-4 pb-3 pr-4 min-[420px]:grid-cols-2">
+                  <div className="mt-2 grid min-h-0 flex-1 auto-rows-min content-start grid-cols-1 gap-2 overflow-y-auto px-4 pb-3 pr-4 min-[420px]:grid-cols-2">
                     {players[0]?.hand.map((card, idx) => (
                       <button
                         key={`${card.id}-${idx}`}
                         type="button"
                         onClick={() => setSelectedHandIndex(idx)}
-                        className={`h-fit w-full rounded-xl border-2 bg-gradient-to-b p-3 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
+                        className={`h-fit w-full rounded-xl border-2 bg-gradient-to-b p-2.5 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
                       >
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-extrabold uppercase tracking-wide">{typeLabel(card.type)}</p>
                           <span className="text-[10px] font-bold opacity-90">Card {idx + 1}</span>
                         </div>
-                        <p className="mt-1 text-base font-black leading-tight">{card.title}</p>
-                        <p className="mt-1 text-xs leading-snug opacity-90">{card.text}</p>
+                        <p className="mt-1 text-sm font-black leading-tight">{card.title}</p>
+                        <p className="mt-1 text-[11px] leading-snug opacity-90">{card.text}</p>
                       </button>
                     ))}
                     {players[0]?.hand.length === 0 ? (
@@ -631,8 +643,8 @@ export default function Home() {
                     ) : null}
                   </div>
                   {winner == null && isHumanTurn ? (
-                    <div className="sticky bottom-0 z-10 mt-auto flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] bg-[#f7f0e4] px-4 py-3">
-                      {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw 2</button> : null}
+                    <div className="shrink-0 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] bg-[#f7f0e4] px-4 py-3">
+                      {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw card</button> : null}
                       {phase === "action" ? (
                         <>
                           <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
