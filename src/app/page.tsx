@@ -41,11 +41,18 @@ const COMPONENTS: Omit<Card, "id">[] = [
   c("paggalaw", "Adaptive Mobility", "Paggalaw na umaangkop sa kahit anong heograpiya.", ["asia", "africa", "south-america", "polar", "coastal", "river", "mountain", "desert", "island", "rainforest", "ocean", "cold", "arid", "agri"]),
   c("lokasyon", "Highland Coordinates", "Reference system for elevated terrain zones.", ["mountain", "cold", "asia", "south-america"]),
   c("lokasyon", "Coastal Bearing", "Positioning via coastline and sea approach.", ["coastal", "island", "ocean"]),
+  c("lokasyon", "Hemisphere Reference", "Pagkilala sa hilaga o timog na bahagi ng daigdig.", ["polar", "ocean", "asia", "africa", "south-america"]),
+  c("rehiyon", "Pacific Rim", "Mga bansang nasa palibot ng Pasipiko.", ["ocean", "island", "coastal", "asia", "south-america"]),
   c("rehiyon", "Mountain Belt", "Magkakaugnay na kabundukang rehiyon.", ["mountain", "asia", "south-america"]),
   c("rehiyon", "Dry Zone", "Rehiyon ng matitinding tuyong klima.", ["desert", "arid", "africa", "asia"]),
   c("paggalaw", "Caravan Route", "Paggalaw sa tuyong ruta ng kalakalan.", ["desert", "arid"]),
   c("paggalaw", "Coastal Navigation", "Paggalaw at kalakalan sa baybaying dagat.", ["coastal", "ocean", "island"]),
   c("paggalaw", "Glacier Trail", "Paglalakbay sa malamig na bulubundukin.", ["mountain", "cold", "polar"]),
+  c("paggalaw", "Meridian Crossing", "Paglipat o paglalakbay na nakaayon sa prime meridian.", ["ocean", "asia", "africa", "south-america", "polar"]),
+  c("lokasyon", "Ilang Hemisphere ang Daigdig?", "Hati ang daigdig sa Northern, Southern, Eastern, at Western Hemisphere.", ["polar", "ocean", "asia", "africa", "south-america"]),
+  c("lokasyon", "Nasaan ang Pilipinas?", "Ang bansa ay nasa kanluran ng Pacific Ocean at silangan ng West Philippine Sea.", ["ocean", "island", "coastal", "asia"]),
+  c("rehiyon", "Ano ang Five Themes?", "Lokasyon, Lugar, Rehiyon, Paggalaw, at Interaksyon.", ["asia", "africa", "south-america", "polar", "coastal", "river", "mountain", "desert", "island", "rainforest", "ocean", "cold", "arid", "agri"]),
+  c("paggalaw", "Guhit ng Lokasyon", "Latitude at longitude ang ginagamit sa paghanap ng lugar.", ["asia", "africa", "south-america", "polar", "ocean"]),
 ];
 
 const INTERACTIONS: Omit<Card, "id">[] = [
@@ -61,6 +68,20 @@ const INTERACTIONS: Omit<Card, "id">[] = [
   c("interaksyon", "Desert Windbreaks", "Proteksyon at pagsasaka sa tuyong lupa.", ["desert", "arid"]),
   c("interaksyon", "Cold-Climate Storage", "Pag-iimbak ng pagkain sa malamig na klima.", ["cold", "polar", "mountain"]),
   c("interaksyon", "Island Port Culture", "Kabuhayan na nakasentro sa pantalan.", ["island", "coastal", "ocean"]),
+  c("interaksyon", "Earth Layers Model", "Pag-unawa sa crust, mantle, at core.", ["mountain", "polar", "ocean", "desert", "river", "coastal", "island", "rainforest"]),
+  c("interaksyon", "Ocean Basin Study", "Pag-aaral sa lawak at lalim ng mga dagat.", ["ocean", "coastal", "island"]),
+  c("interaksyon", "Continent Survey", "Paghahambing ng lawak ng mga kontinente.", ["asia", "africa", "south-america", "mountain", "desert", "rainforest", "polar"]),
+  c("interaksyon", "Theme Mapping", "Pag-uugnay ng lokasyon, lugar, rehiyon, paggalaw, at interaksyon.", ["asia", "africa", "south-america", "polar", "coastal", "river", "mountain", "desert", "island", "rainforest", "ocean", "cold", "arid", "agri"]),
+  c("interaksyon", "Ilang Porsiyento ang Tubig?", "Mga 71% ng daigdig ay tubig at 29% ay lupa.", ["ocean", "coastal", "island"]),
+  c("interaksyon", "Ano ang Pinakamataas na Bundok?", "Everest ang pinakamataas na bundok sa daigdig.", ["mountain", "cold", "asia"]),
+  c("interaksyon", "Ano ang Pinakamalaking Kontinente?", "Asya ang may pinakamalawak na lawak.", ["asia", "mountain", "desert", "ocean", "rainforest", "coastal"]),
+  c("interaksyon", "Ano ang Pitong Kontinente?", "Australia at Oceania, Europe, South America, Antarctica, North America, Africa, at Asya.", ["asia", "africa", "south-america", "polar", "mountain", "desert", "rainforest"]),
+  c("interaksyon", "Ano ang Limang Karagatan?", "Pacific, Atlantic, Indian, Southern, at Arctic Ocean.", ["ocean", "coastal", "island", "polar"]),
+  c("interaksyon", "Ano ang Tatlong Bahagi ng Daigdig?", "Crust, mantle, at core ang pangunahing bahagi.", ["mountain", "polar", "ocean", "desert", "river", "coastal", "island", "rainforest"]),
+  c("interaksyon", "Ano ang Relatibong Lokasyon?", "Pagtukoy sa lugar batay sa mga katabi o kalapit na anyong lupa at tubig.", ["coastal", "river", "mountain", "desert", "island", "ocean"]),
+  c("interaksyon", "Ano ang Absolute Location?", "Pagtukoy sa lugar gamit ang latitude at longitude.", ["asia", "africa", "south-america", "ocean", "polar"]),
+  c("interaksyon", "Ano ang Distribusyon?", "Pagkakahati-hati ng mga bagay o pangyayari sa isang pook.", ["asia", "africa", "south-america", "polar", "coastal", "river", "mountain", "desert", "island", "rainforest", "ocean", "cold", "arid", "agri"]),
+  c("interaksyon", "Ano ang Interaksyon?", "Ugnayan ng tao at pisikal na kapaligiran sa isang lugar.", ["asia", "africa", "south-america", "polar", "coastal", "river", "mountain", "desert", "island", "rainforest", "ocean", "cold", "arid", "agri"]),
 ];
 
 const DISASTERS: Omit<Card, "id">[] = [
@@ -89,12 +110,11 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function buildDeck(): Card[] {
-  const duplicate = <T,>(arr: T[], count: number): T[] => Array.from({ length: count }, () => arr).flat();
   const raw = [
-    ...duplicate(COMPONENTS, 3),
-    ...duplicate(INTERACTIONS, 3),
-    ...duplicate(DISASTERS, 2),
-    ...duplicate(ADAPTATIONS, 2),
+    ...COMPONENTS,
+    ...INTERACTIONS,
+    ...DISASTERS,
+    ...ADAPTATIONS,
   ];
   return shuffle(raw.map((x, i) => ({ ...x, id: `${x.type}-${i + 1}` })));
 }
@@ -117,10 +137,72 @@ function typeLabel(type: CardType): string {
   return "Adaptation";
 }
 
-function cardFrame(type: CardType): string {
-  if (type === "disaster") return "from-[#a76b3d] to-[#7a4121] text-white border-[#7a4121]";
-  if (type === "adaptation") return "from-[#2e5d8a] to-[#1f456a] text-white border-[#173650]";
-  return "from-[#efe3cf] to-[#dcc09b] text-[#1f2b38] border-[#9f7b54]";
+function cardTone(type: CardType): {
+  base: string;
+  border: string;
+  text: string;
+  label: string;
+} {
+  if (type === "lokasyon") {
+    return {
+      base: "bg-[#e11d1d]",
+      border: "border-[#f6f1e8]",
+      text: "text-white",
+      label: "text-white/90",
+    };
+  }
+  if (type === "rehiyon") {
+    return {
+      base: "bg-[#f3c516]",
+      border: "border-[#fff5d6]",
+      text: "text-[#13212f]",
+      label: "text-[#13212f]/80",
+    };
+  }
+  if (type === "paggalaw") {
+    return {
+      base: "bg-[#2f9e44]",
+      border: "border-[#eaf8e8]",
+      text: "text-white",
+      label: "text-white/90",
+    };
+  }
+  if (type === "disaster") {
+    return {
+      base: "bg-[#c24d19]",
+      border: "border-[#fff2e6]",
+      text: "text-white",
+      label: "text-white/90",
+    };
+  }
+  if (type === "adaptation") {
+    return {
+      base: "bg-[#2563eb]",
+      border: "border-[#e7f1ff]",
+      text: "text-white",
+      label: "text-white/90",
+    };
+  }
+  return {
+    base: "bg-[#f5b91e]",
+    border: "border-[#fff3cc]",
+    text: "text-[#14202e]",
+    label: "text-[#14202e]/80",
+  };
+}
+
+function handCardClassName(selected: boolean): string {
+  return [
+    "group relative overflow-hidden rounded-[1.35rem] border-[6px] shadow-[0_12px_24px_rgba(0,0,0,0.18)] transition",
+    "aspect-[2.3/3.4] w-full text-left",
+    "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2f6fa7]/70",
+    selected ? "ring-4 ring-[#2f6fa7] scale-[1.02]" : "hover:-translate-y-1 hover:scale-[1.01]",
+  ].join(" ");
+}
+
+function handCardInnerClassName(type: CardType): string {
+  const tone = cardTone(type);
+  return `${tone.base} ${tone.border} ${tone.text}`;
 }
 
 function cardBackStyle(offset: number): CSSProperties {
@@ -153,6 +235,50 @@ export default function Home() {
   const active = players[turn];
   const humanIndex = 0;
   const isHumanTurn = Boolean(active?.isHuman);
+  const toggleMobileHand = useCallback(() => {
+    setShowMobileHand((prev) => !prev);
+  }, []);
+
+  const renderHandCard = (card: Card, idx: number, compact = false) => {
+    const tone = cardTone(card.type);
+    return (
+      <button
+        key={`${card.id}-${idx}`}
+        type="button"
+        onClick={() => setSelectedHandIndex(idx)}
+        className={`${handCardClassName(selectedHandIndex === idx)} ${handCardInnerClassName(card.type)} ${compact ? "max-w-[170px]" : "max-w-none"}`}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.12)_16%,transparent_30%),radial-gradient(circle_at_80%_82%,rgba(255,255,255,0.12)_0%,transparent_28%)]" />
+        <div className="absolute left-0 top-0 h-full w-full rounded-[1.35rem] border-4 border-white/65 opacity-90" />
+        <div className="absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-[999px] border-[5px] border-white/88 rotate-[-22deg]" />
+        <div className={`absolute left-3 top-2 ${compact ? "text-[0.9rem]" : "text-[clamp(0.95rem,2vw,1.35rem)]"} font-black leading-none drop-shadow-[0_1px_0_rgba(255,255,255,0.35)]`}>
+          {idx + 1}
+        </div>
+        <div className={`absolute bottom-2 right-3 rotate-180 ${compact ? "text-[0.9rem]" : "text-[clamp(0.95rem,2vw,1.35rem)]"} font-black leading-none drop-shadow-[0_1px_0_rgba(255,255,255,0.35)]`}>
+          {idx + 1}
+        </div>
+        <div className={`absolute right-3 top-3 ${compact ? "text-[0.52rem]" : "text-[0.6rem]"} font-black uppercase tracking-[0.22em] ${tone.label}`}>
+          {typeLabel(card.type)}
+        </div>
+        <div className={`relative z-10 flex h-full flex-col justify-between ${compact ? "p-3" : "p-4"}`}>
+          <div />
+          <div className="text-center">
+            <p className={`${compact ? "text-[0.54rem]" : "text-[0.62rem]"} font-black uppercase tracking-[0.24em] ${tone.label}`}>{typeLabel(card.type)}</p>
+            <p className={`${compact ? "mt-1 text-[0.84rem]" : "mt-2 text-[1.05rem]"} font-black leading-[1.03] drop-shadow-[0_1px_0_rgba(255,255,255,0.18)]`}>
+              {card.title}
+            </p>
+            <p className={`mx-auto mt-2 max-w-[13ch] ${compact ? "text-[0.55rem]" : "text-[0.72rem]"} font-medium leading-snug opacity-95`}>
+              {card.text}
+            </p>
+          </div>
+          <div className="flex items-end justify-between">
+            <span className={`text-[0.5rem] font-black uppercase tracking-[0.25em] ${tone.label}`}>Geo-Deck</span>
+            <span className={`text-[0.5rem] font-black uppercase tracking-[0.25em] ${tone.label}`}>UNO</span>
+          </div>
+        </div>
+      </button>
+    );
+  };
 
   const drawFromPiles = useCallback((currentDraw: Card[], currentDiscard: Card[], count: number) => {
     const draw = [...currentDraw];
@@ -181,9 +307,7 @@ export default function Home() {
     setActionsLeft(2);
     setSelectedHandIndex(null);
     setSelectedTarget(nt === 0 ? 1 : 0);
-    if (!nextPlayers[nt]?.isHuman) {
-      setShowMobileHand(false);
-    }
+    setShowMobileHand(false);
     setMessage(`${nextPlayers[nt].name} turn: Draw phase.`);
   }, [turn]);
 
@@ -214,6 +338,7 @@ export default function Home() {
     setSelectedTarget(1);
     setWinner(null);
     setWinDrops([]);
+    setShowMobileHand(false);
     setMessage("Your turn: Draw a card.");
     setStarted(true);
   };
@@ -276,6 +401,7 @@ export default function Home() {
 
     if (isWinning(nextCiv)) {
       setWinner(humanIndex);
+      setShowMobileHand(false);
       setMessage("You win! Master Geographer!");
       launchWinDrops();
       return;
@@ -383,6 +509,7 @@ export default function Home() {
             setDrawPile(nextDraw);
             setDiscardPile(nextDiscard);
             setWinner(cpuIdx);
+            setShowMobileHand(false);
             setMessage(`${cpu.name} wins.`);
             launchWinDrops();
             return;
@@ -429,18 +556,34 @@ export default function Home() {
             {winner == null && isHumanTurn ? (
               <div className="fixed inset-x-0 bottom-0 z-[70] lg:hidden">
                 <div className="mx-auto max-w-6xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-                  <div className="flex items-center justify-center gap-2 rounded-2xl border border-[#b58f60] bg-[#efe4d2]/95 p-3 shadow-2xl backdrop-blur-sm">
-                    <button
-                      type="button"
-                      onClick={() => setShowMobileHand(true)}
-                      className="rounded-full bg-[#1f5f3a] px-4 py-2 text-sm font-bold text-white shadow-xl"
-                    >
-                Open Cards
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+                  <div className="flex items-center gap-2 rounded-2xl border border-[#b58f60] bg-[#efe4d2]/95 px-3 py-3 shadow-2xl backdrop-blur-sm">
+                    {phase === "draw" ? (
+                      <button
+                        type="button"
+                        onClick={humanDraw}
+                        className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white shadow-xl"
+                      >
+                        Draw card
+                      </button>
+                    ) : null}
+                    {!showMobileHand ? (
+                      <button
+                        type="button"
+                        onClick={toggleMobileHand}
+                        className="rounded-full bg-[#1f5f3a] px-4 py-2 text-sm font-bold text-white shadow-xl"
+                      >
+                        Open Cards
+                      </button>
+                    ) : null}
+                    {phase !== "draw" ? (
+                      <p className="text-xs font-semibold text-[#5d3417]">
+                        {showMobileHand ? "Cards are open for your turn." : "Open your hand to choose a card."}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
       <div className="mx-auto max-w-6xl rounded-3xl border border-[#b58f60] bg-[#efe4d2]/92 p-5 shadow-2xl backdrop-blur-[1px] md:p-7">
         <h1 className="text-3xl font-black tracking-tight">GEO-DECK Solo Mode</h1>
@@ -569,22 +712,10 @@ export default function Home() {
               <aside className="hidden rounded-2xl border border-[#ba9b76] bg-[#f7f0e4] p-4 shadow-xl xl:block">
                 <h3 className="text-lg font-bold">Your Card Choices</h3>
                 <p className="mt-1 text-xs text-[#5f4c36]">Select a card on the right panel, then use action buttons below.</p>
-                <div className="mt-3 max-h-[620px] space-y-2 overflow-y-auto pr-1">
-                  {players[0]?.hand.map((card, idx) => (
-                    <button
-                      key={`${card.id}-${idx}`}
-                      type="button"
-                      onClick={() => setSelectedHandIndex(idx)}
-                      className={`w-full rounded-xl border-2 bg-gradient-to-b p-3 text-left shadow-sm transition hover:-translate-y-0.5 ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-extrabold uppercase tracking-wide">{typeLabel(card.type)}</p>
-                        <span className="text-[10px] font-bold opacity-90">Card {idx + 1}</span>
-                      </div>
-                      <p className="mt-1 text-base font-black leading-tight">{card.title}</p>
-                      <p className="mt-1 text-xs leading-snug opacity-90">{card.text}</p>
-                    </button>
-                  ))}
+                <div className="mt-3 max-h-[620px] overflow-y-auto pr-1">
+                  <div className="grid grid-cols-1 gap-3">
+                    {players[0]?.hand.map((card, idx) => renderHandCard(card, idx))}
+                  </div>
                   {players[0]?.hand.length === 0 ? (
                     <p className="rounded-lg border border-dashed border-[#8e6b48] bg-[#efe1cd] p-3 text-xs text-[#5f4c36]">No cards in hand.</p>
                   ) : null}
@@ -622,29 +753,19 @@ export default function Home() {
                     <button type="button" onClick={() => setShowMobileHand(false)} className="rounded-full bg-[#6e4a2f] px-3 py-1 text-xs font-bold text-white">Close</button>
                   </div>
                   <p className="px-4 pt-2 text-xs text-[#5f4c36]">Mobile mode: cards are shown in this modal for easier play.</p>
-                  <div className="mt-2 grid min-h-0 flex-1 auto-rows-min content-start grid-cols-1 gap-2 overflow-y-auto px-4 pb-3 pr-4 min-[420px]:grid-cols-2">
-                    {players[0]?.hand.map((card, idx) => (
-                      <button
-                        key={`${card.id}-${idx}`}
-                        type="button"
-                        onClick={() => setSelectedHandIndex(idx)}
-                        className={`h-fit w-full rounded-xl border-2 bg-gradient-to-b p-2.5 text-left shadow-sm transition ${cardFrame(card.type)} ${selectedHandIndex === idx ? "ring-4 ring-[#2f6fa7]" : ""}`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-extrabold uppercase tracking-wide">{typeLabel(card.type)}</p>
-                          <span className="text-[10px] font-bold opacity-90">Card {idx + 1}</span>
-                        </div>
-                        <p className="mt-1 text-sm font-black leading-tight">{card.title}</p>
-                        <p className="mt-1 text-[11px] leading-snug opacity-90">{card.text}</p>
-                      </button>
-                    ))}
+                  <div className="mt-2 grid min-h-0 flex-1 auto-rows-min content-start grid-cols-1 gap-3 overflow-y-auto px-4 pb-3 pr-4 min-[420px]:grid-cols-2">
+                    {players[0]?.hand.map((card, idx) => renderHandCard(card, idx, true))}
                     {players[0]?.hand.length === 0 ? (
                       <p className="col-span-full rounded-lg border border-dashed border-[#8e6b48] bg-[#efe1cd] p-3 text-xs text-[#5f4c36]">No cards in hand.</p>
                     ) : null}
                   </div>
                   {winner == null && isHumanTurn ? (
                     <div className="shrink-0 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] bg-[#f7f0e4] px-4 py-3">
-                      {phase === "draw" ? <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">Draw card</button> : null}
+                      {phase === "draw" ? (
+                        <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">
+                          Draw card
+                        </button>
+                      ) : null}
                       {phase === "action" ? (
                         <>
                           <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
@@ -668,13 +789,17 @@ export default function Home() {
             ) : null}
 
             {winner != null ? (
-              <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/45 p-4">
-                <section className="w-full max-w-md rounded-3xl border-2 border-[#d9b68b] bg-[#f7e8d4] p-7 text-center shadow-2xl">
-                  <h3 className="text-3xl font-black text-[#1f3550]">{winner === 0 ? `You Win ${players[winner].name}` : `${players[winner].name} Wins`}</h3>
-                  <button type="button" onClick={setupGame} className="mt-5 rounded-full bg-[#2f5d8a] px-6 py-3 text-sm font-bold text-white">Play Again</button>
-                </section>
+              <div className="fixed inset-0 z-[90] flex items-start justify-center overflow-y-auto bg-black/45 p-4">
+                <div className="w-full max-w-md">
+                  <section className="w-full rounded-3xl border-2 border-[#d9b68b] bg-[#f7e8d4] p-7 text-center shadow-2xl">
+                    <h3 className="text-3xl font-black text-[#1f3550]">{winner === 0 ? `You Win ${players[winner].name}` : `${players[winner].name} Wins`}</h3>
+                    <button type="button" onClick={setupGame} className="mt-5 rounded-full bg-[#2f5d8a] px-6 py-3 text-sm font-bold text-white">Play Again</button>
+                  </section>
+                </div>
               </div>
             ) : null}
+
+
           </>
         ) : null}
 
