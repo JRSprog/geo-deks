@@ -557,15 +557,6 @@ export default function Home() {
               <div className="fixed inset-x-0 bottom-0 z-[70] lg:hidden">
                 <div className="mx-auto max-w-6xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                   <div className="flex items-center gap-2 rounded-2xl border border-[#b58f60] bg-[#efe4d2]/95 px-3 py-3 shadow-2xl backdrop-blur-sm">
-                    {phase === "draw" ? (
-                      <button
-                        type="button"
-                        onClick={humanDraw}
-                        className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white shadow-xl"
-                      >
-                        Draw card
-                      </button>
-                    ) : null}
                     {!showMobileHand ? (
                       <button
                         type="button"
@@ -575,11 +566,18 @@ export default function Home() {
                         Open Cards
                       </button>
                     ) : null}
-                    {phase !== "draw" ? (
-                      <p className="text-xs font-semibold text-[#5d3417]">
-                        {showMobileHand ? "Cards are open for your turn." : "Open your hand to choose a card."}
-                      </p>
+                    {showMobileHand && phase === "draw" ? (
+                      <button
+                        type="button"
+                        onClick={humanDraw}
+                        className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white shadow-xl"
+                      >
+                        Draw card
+                      </button>
                     ) : null}
+                    <p className="text-xs font-semibold text-[#5d3417]">
+                      {showMobileHand ? "Cards are open for your turn." : "Open your hand to choose a card."}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -761,11 +759,6 @@ export default function Home() {
                   </div>
                   {winner == null && isHumanTurn ? (
                     <div className="shrink-0 flex flex-wrap items-center gap-2 border-t border-[#d7c2a3] bg-[#f7f0e4] px-4 py-3">
-                      {phase === "draw" ? (
-                        <button type="button" onClick={humanDraw} className="rounded-full bg-[#2f5d8a] px-4 py-2 text-sm font-bold text-white">
-                          Draw card
-                        </button>
-                      ) : null}
                       {phase === "action" ? (
                         <>
                           <button type="button" onClick={humanPlace} className="rounded-full bg-[#2f6fa7] px-4 py-2 text-sm font-bold text-white">Place Card</button>
